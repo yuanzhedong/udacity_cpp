@@ -1,5 +1,6 @@
 #include <curses.h>
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -69,7 +70,9 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   mvwprintw(window, row, time_column, "TIME+");
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
+
   for (int i = 0; i < n; ++i) {
+    // std::cout << processes[i].Command() << std::endl;
     mvwprintw(window, ++row, pid_column, to_string(processes[i].Pid()).c_str());
     mvwprintw(window, row, user_column, processes[i].User().c_str());
     float cpu = processes[i].CpuUtilization() * 100;
