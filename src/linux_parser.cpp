@@ -69,26 +69,15 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// DONE: Read and return the system memory utilization
+// Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
-  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
-  string line, key, value, mem_total, mem_avail;
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
-      while (linestream >> key >> value) {
-        if (key == "MemTotal:") {
-          mem_total = value;
-        }
-        if (key == "MemAvailable:") {
-          mem_avail = value;
-        }
-      }
-    }
-  }
-  // std::cout << mem_avail << ", " << mem_total << std::endl;
-  return std::stof(mem_avail) / std::stof(mem_total);
+  string memTotal = "MemTotal:";
+  string memFree = "MemFree:";
+  float Total = findValueByKey<float>(memTotal, kMeminfoFilename);// "/proc/memInfo"
+  float Free = findValueByKey<float>(memFree, kMeminfoFilename);
+  return (Total - Free) / Total;
 }
+
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() {
