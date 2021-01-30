@@ -16,17 +16,16 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
+// Return a container composed of the system's processes
 vector<Process>& System::Processes() {
   vector<int> pids = LinuxParser::Pids();
   processes_.clear();
   for (auto pid : pids) {
-    processes_.emplace_back(Process(pid));
+    processes_.emplace_back(pid);
   }
-  // std::cout << processes_.size() << std::endl;
   sort(processes_.begin(), processes_.end());
   return processes_;
 }
