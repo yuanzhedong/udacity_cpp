@@ -73,8 +73,8 @@ vector<int> LinuxParser::Pids() {
 
 // Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
-  string memTotal = "MemTotal:";
-  string memFree = "MemFree:";
+  string memTotal = kFilterMemTotalString;
+  string memFree = kFilterMemFreeString;
   float Total =
       findValueByKey<float>(memTotal, kMeminfoFilename);  // "/proc/memInfo"
   float Free = findValueByKey<float>(memFree, kMeminfoFilename);
@@ -150,7 +150,7 @@ int LinuxParser::TotalProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "processes") {
+        if (key == kFilterProcesses) {
           return std::stoi(value);
         }
       }
@@ -167,7 +167,7 @@ int LinuxParser::RunningProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "procs_running") {
+        if (key == kFilterRunningProcesses) {
           return std::stoi(value);
         }
       }
@@ -179,7 +179,7 @@ int LinuxParser::RunningProcesses() {
 string LinuxParser::Command(int pid) {
   string cmd = std::string(
       getValueOfFile<std::string>(std::to_string(pid) + kCmdlineFilename));
-  return cmd.size() > 50 ? cmd.substr(50) + "..." : cmd;
+  return cmd.size() > 50 ? cmd.substr(0, 50) + "...#" : cmd;
 }
 
 // Read and return the memory used by a process
@@ -190,8 +190,8 @@ string LinuxParser::Ram(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "VmSize:") {  // use VmData to get the physical size instead
-                                 // of virtual size(VmSize)
+        if (key == kFilterProcMem) {  // use VmData to get the physical size
+                                      // instead of virtual size(VmSize)
           return value.empty()
                      ? "0"
                      : to_string(std::stol(value) /
@@ -212,7 +212,7 @@ string LinuxParser::Uid(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "Uid:") {
+        if (key == kFilterUID) {
           uid = value;
         }
       }
