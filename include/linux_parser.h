@@ -5,6 +5,10 @@
 #include <regex>
 #include <string>
 
+#define printVariableNameAndValue(x)             \
+  std::cout << "The name of variable **" << (#x) \
+            << "** and the value of variable is => " << x << "\n"
+
 namespace LinuxParser {
 // Paths
 const std::string kProcDirectory{"/proc/"};
