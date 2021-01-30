@@ -1,11 +1,12 @@
+#include "linux_parser.h"
+
 #include <assert.h>
 #include <dirent.h>
 #include <unistd.h>
+
 #include <iostream>
 #include <string>
 #include <vector>
-
-#include "linux_parser.h"
 
 using std::stof;
 using std::string;
@@ -74,11 +75,11 @@ vector<int> LinuxParser::Pids() {
 float LinuxParser::MemoryUtilization() {
   string memTotal = "MemTotal:";
   string memFree = "MemFree:";
-  float Total = findValueByKey<float>(memTotal, kMeminfoFilename);// "/proc/memInfo"
+  float Total =
+      findValueByKey<float>(memTotal, kMeminfoFilename);  // "/proc/memInfo"
   float Free = findValueByKey<float>(memFree, kMeminfoFilename);
   return (Total - Free) / Total;
 }
-
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() {
@@ -90,7 +91,10 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> up_time;
   }
-  return up_time.empty()? 0 : std::stol(up_time); // check if it's empty, otherwise random segfault
+  return up_time.empty()
+             ? 0
+             : std::stol(
+                   up_time);  // check if it's empty, otherwise random segfault
 }
 
 // TODO: Read and return the number of jiffies for the system
@@ -173,8 +177,9 @@ int LinuxParser::RunningProcesses() {
 }
 
 string LinuxParser::Command(int pid) {
-  string cmd = std::string(getValueOfFile<std::string>(std::to_string(pid) + kCmdlineFilename));
-  return cmd.size() > 50? cmd.substr(50) + "..." : cmd;
+  string cmd = std::string(
+      getValueOfFile<std::string>(std::to_string(pid) + kCmdlineFilename));
+  return cmd.size() > 50 ? cmd.substr(50) + "..." : cmd;
 }
 
 // Read and return the memory used by a process
@@ -185,8 +190,12 @@ string LinuxParser::Ram(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "VmData:") { // use VmData to get the physical size instead of virtual size(VmSize)
-          return value.empty()? "0" : to_string(std::stol(value) / 1024); // or remove the last three chars
+        if (key == "VmSize:") {  // use VmData to get the physical size instead
+                                 // of virtual size(VmSize)
+          return value.empty()
+                     ? "0"
+                     : to_string(std::stol(value) /
+                                 1024);  // or remove the last three chars
         }
       }
     }
@@ -255,8 +264,8 @@ long LinuxParser::UpTime(int pid) {
            &start_time);
   }
   /*
-  In order to get the unit of time it has been running since start you need to subtract it from the UpTime() of
-  the system and so you need to do as follows:
+  In order to get the unit of time it has been running since start you need to
+  subtract it from the UpTime() of the system and so you need to do as follows:
   int upTimePid = UpTime() - stol(var)/sysconf(_SC_CLK_TCK);
   return upTimePid;
   */

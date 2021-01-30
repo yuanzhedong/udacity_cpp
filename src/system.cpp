@@ -1,4 +1,7 @@
+#include "system.h"
+
 #include <unistd.h>
+
 #include <cstddef>
 #include <iostream>
 #include <set>
@@ -7,7 +10,6 @@
 
 #include "process.h"
 #include "processor.h"
-#include "system.h"
 
 using std::set;
 using std::size_t;

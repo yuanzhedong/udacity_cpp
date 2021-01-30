@@ -1,8 +1,9 @@
+#include "processor.h"
+
 #include <errno.h>
 #include <stdio.h>
-#include <iostream>
 
-#include "processor.h"
+#include <iostream>
 
 void Processor::LoadProcStat(
     unsigned long long& user, unsigned long long& nice,
