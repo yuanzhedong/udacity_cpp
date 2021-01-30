@@ -1,8 +1,9 @@
+#include "processor.h"
+
 #include <errno.h>
 #include <stdio.h>
-#include <iostream>
 
-#include "processor.h"
+#include <iostream>
 
 void Processor::LoadProcStat(
     unsigned long long& user, unsigned long long& nice,
@@ -14,7 +15,7 @@ void Processor::LoadProcStat(
   //   // added between Linux 2.5.41 and 2.6.33, see man proc(5)
   //   unsigned long long iowait = 0, irq = 0, softirq = 0, steal = 0, guest =
   //   0,
-  //                      guestnice = 0;
+  //   guestnice = 0;
   FILE* file = fopen("/proc/stat", "r");
   if (file == NULL) {
     perror("Could not open stat file");
@@ -37,7 +38,7 @@ void Processor::LoadProcStat(
          &user, &nice, &system, &idle, &iowait, &irq, &softirq, &steal, &guest,
          &guestnice);
 }
-// TODO: Return the aggregate CPU utilization
+// Return the aggregate CPU utilization
 float Processor::Utilization() {
   unsigned long long cur_user = 0, cur_nice = 0, cur_system = 0, cur_idle = 0,
                      cur_iowait = 0, cur_irq = 0, cur_softirq = 0,
@@ -58,7 +59,7 @@ float Processor::Utilization() {
   auto total_d = cur_total - prev_total;
   auto idle_d = cur_idle_c - prev_idle_c;
 
-  float cpu_percent = (total_d - idle_d) / (float)total_d;
+  float cpu_percent = (total_d - idle_d) / static_cast<float>(total_d);
 
   user = cur_user;
   nice = cur_nice;
