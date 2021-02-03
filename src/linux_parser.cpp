@@ -81,7 +81,7 @@ float LinuxParser::MemoryUtilization() {
   return (Total - Free) / Total;
 }
 
-// TODO: Read and return the system uptime
+// Read and return the system uptime
 long LinuxParser::UpTime() {
   std::ifstream filestream(kProcDirectory + kUptimeFilename);
   string line;
@@ -97,7 +97,7 @@ long LinuxParser::UpTime() {
                    up_time);  // check if it's empty, otherwise random segfault
 }
 
-// TODO: Read and return the number of jiffies for the system
+// Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
   unsigned long long user, nice, system, idle, total_cpu_usage = 0;
   std::ifstream filestream(kProcDirectory + kStatFilename);
@@ -118,25 +118,38 @@ long LinuxParser::ActiveJiffies(int pid) {
   unsigned long int user_time, system_time;
   if (filestream.is_open()) {
     std::getline(filestream, line);
+    /*  sscanf(line.c_str(),
+            "%*d %*s %*c %*d"  // pid,command,state,ppid
+
+            "%*d %*d %*d %*d %*u %*lu %*lu %*lu %*lu"
+
+            "%lu %lu"  // usertime,systemtime
+
+            "%*ld %*ld %*ld %*ld %*ld %*ld %*llu"
+
+            "%*lu",  // virtual memory size in bytes
+            &user_time, &system_time);
+   } */
+
     sscanf(line.c_str(),
            "%*d %*s %*c %*d"  // pid,command,state,ppid
 
-           "%*d %*d %*d %*d %*u %*lu %*lu %*lu %*lu"
+           "%*d %*d %*d %*d %*u %*u %*u %*u %*u"
 
            "%lu %lu"  // usertime,systemtime
 
-           "%*ld %*ld %*ld %*ld %*ld %*ld %*llu"
+           "%*d %*d %*d %*d %*d %*d %*u"
 
-           "%*lu",  // virtual memory size in bytes
+           "%*u",  // virtual memory size in bytes
            &user_time, &system_time);
   }
   return user_time + system_time;
 }
 
-// TODO: Read and return the number of active jiffies for the system
+// Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { return 0; }
 
-// TODO: Read and return the number of idle jiffies for the system
+// Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
 
 // Read and return CPU utilization
@@ -254,13 +267,13 @@ long LinuxParser::UpTime(int pid) {
     sscanf(line.c_str(),
            "%*d %*s %*c %*d"  // pid,command,state,ppid
 
-           "%*d %*d %*d %*d %*u %*lu %*lu %*lu %*lu"
+           "%*d %*d %*d %*d %*u %*u %*u %*u %*u"
 
-           "%*lu %*lu"  // usertime,systemtime
+           "%*u %*u"  // usertime,systemtime
 
-           "%*ld %*ld %*ld %*ld %*ld %*ld %llu"
+           "%*d %*d %*d %*d %*d %*d %llu"
 
-           "%*lu",  // virtual memory size in bytes
+           "%*u",  // virtual memory size in bytes
            &start_time);
   }
   /*

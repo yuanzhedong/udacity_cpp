@@ -23,8 +23,8 @@ float Process::CpuUtilization() const {
   auto proc_times = LinuxParser::ActiveJiffies(pid_);
   auto total_cpu_usage = LinuxParser::Jiffies();
   auto cpu_util = float(proc_times) / total_cpu_usage;
-  //printVariableNameAndValue(proc_times);
-  //printVariableNameAndValue(total_cpu_usage);
+  // printVariableNameAndValue(proc_times);
+  // printVariableNameAndValue(total_cpu_usage);
   return cpu_util;
 }
 
